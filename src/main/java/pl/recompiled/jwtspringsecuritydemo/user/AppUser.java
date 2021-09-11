@@ -4,26 +4,20 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.data.domain.Persistable;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import javax.persistence.Convert;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Transient;
+import javax.persistence.*;
 import java.util.Set;
-import java.util.UUID;
 
 @Entity
 @Getter
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class AppUser implements Persistable<UUID>, UserDetails {
+public class AppUser implements UserDetails {
 
     @Id
-    private UUID id;
-    @Transient
-    private boolean isNew;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
     private String username;
     private String password;
 
@@ -31,7 +25,7 @@ public class AppUser implements Persistable<UUID>, UserDetails {
     private Set<Authority> authorities;
 
     public static AppUser newInstance(String username, String password, Authority... authorities) {
-        return new AppUser(UUID.randomUUID(), true, username, password, Set.of(authorities));
+        return new AppUser(null, username, password, Set.of(authorities));
     }
 
     @Override
