@@ -4,6 +4,7 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
@@ -17,17 +18,22 @@ import java.util.stream.Collectors;
 @Component
 public class JwtAccessTokenProvider implements AccessTokenProvider {
 
-    private final Algorithm algorithm = Algorithm.HMAC256("secret".getBytes(StandardCharsets.UTF_8));
-    private final JWTVerifier verifier = JWT.require(algorithm).build();
-    private final Integer tokenLifespanSeconds = 60 * 30;
-    private final String issuer = "recompiled-jwt.pl";
+    private final JwtAccessTokenProperties properties;
+    private final Algorithm algorithm;
+    private final JWTVerifier verifier;
+
+    public JwtAccessTokenProvider(JwtAccessTokenProperties properties) {
+        this.properties = properties;
+        this.algorithm = Algorithm.HMAC256(properties.getSecret().getBytes(StandardCharsets.UTF_8));
+        this.verifier = JWT.require(algorithm).build();
+    }
 
     @Override
     public String getAccessToken(String userId, List<String> roles) {
         return JWT.create()
                 .withSubject(userId)
-                .withExpiresAt(new Date(System.currentTimeMillis() + tokenLifespanSeconds * 1000))
-                .withIssuer(issuer)
+                .withExpiresAt(new Date(System.currentTimeMillis() + properties.getTokenLifespanSeconds() * 1000))
+                .withIssuer(properties.getIssuer())
                 .withClaim("roles", roles)
                 .sign(algorithm);
     }
