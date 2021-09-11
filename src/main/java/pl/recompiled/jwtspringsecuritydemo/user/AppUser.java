@@ -12,7 +12,7 @@ import java.util.Set;
 @Entity
 @Getter
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
+@NoArgsConstructor(access = AccessLevel.PACKAGE)
 public class AppUser implements UserDetails {
 
     @Id

@@ -1,4 +1,4 @@
 access-token.jwt:
   issuer: recompiled-demo.pl
   secret: j+x1Wvn/Dz/AZOqFj/nBsSOUKutXQvhag55MpLESVtI=
-  token-lifespan-seconds: 60 * 30
+  token-lifespan-seconds: 1800
