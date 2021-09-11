@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface AccessTokenProvider {
 
-    String getAccessToken(String username, List<String> roles);
+    String getAccessToken(String userId, List<String> roles);
 
     Authentication extractAuthentication(String token);
 

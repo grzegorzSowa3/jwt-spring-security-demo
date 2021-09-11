@@ -6,9 +6,11 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import pl.recompiled.jwtspringsecuritydemo.user.AppUserService;
 
 import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
 
@@ -16,14 +18,14 @@ import static org.springframework.security.config.http.SessionCreationPolicy.STA
 @RequiredArgsConstructor
 public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
+    private final PasswordEncoder passwordEncoder;
     private final AccessTokenProvider accessTokenProvider;
+    private final AppUserService userService;
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.inMemoryAuthentication()
-                .withUser("user")
-                .password(passwordEncoder().encode("pass"))
-                .roles("USER");
+        auth.userDetailsService(userService)
+                .passwordEncoder(passwordEncoder);
     }
 
     @Override
@@ -33,16 +35,11 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .authorizeRequests().anyRequest().authenticated()
                 .and()
                 .formLogin()
-                .successHandler(new AccessTokenAuthenticationSuccessHandler(accessTokenProvider))
+                .successHandler(new AccessTokenAuthenticationSuccessHandler(accessTokenProvider, userService))
                 .and()
                 .sessionManagement().sessionCreationPolicy(STATELESS)
                 .and()
                 .csrf().disable();
-    }
-
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
     }
 
 }

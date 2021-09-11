@@ -23,9 +23,9 @@ public class JwtAccessTokenProvider implements AccessTokenProvider {
     private final String issuer = "recompiled-jwt.pl";
 
     @Override
-    public String getAccessToken(String username, List<String> roles) {
+    public String getAccessToken(String userId, List<String> roles) {
         return JWT.create()
-                .withSubject(username)
+                .withSubject(userId)
                 .withExpiresAt(new Date(System.currentTimeMillis() + tokenLifespanSeconds * 1000))
                 .withIssuer(issuer)
                 .withClaim("roles", roles)
