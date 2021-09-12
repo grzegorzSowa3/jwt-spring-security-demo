@@ -17,6 +17,10 @@ public class AppUserService implements UserDetailsService {
         return repository.save(AppUser.newInstance(username, passwordEncoder.encode(password), Authority.USER));
     }
 
+    public AppUser createAdmin(String username, String password) {
+        return repository.save(AppUser.newInstance(username, passwordEncoder.encode(password), Authority.USER, Authority.ADMIN));
+    }
+
     @Override
     public AppUser loadUserByUsername(String username) throws UsernameNotFoundException {
         return repository.findByUsername(username)

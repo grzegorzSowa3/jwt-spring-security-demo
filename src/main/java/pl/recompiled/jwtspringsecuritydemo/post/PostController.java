@@ -3,6 +3,7 @@ package pl.recompiled.jwtspringsecuritydemo.post;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import static org.springframework.http.HttpStatus.CREATED;
@@ -27,6 +28,7 @@ public class PostController {
     }
 
     @DeleteMapping("{postId}")
+    @PreAuthorize("@authorChecker.check(#postId) or hasAuthority('ADMIN')")
     public ResponseEntity<Void> deletePost(@PathVariable Long postId) {
         postService.deletePost(postId);
         return ResponseEntity.status(NO_CONTENT).build();

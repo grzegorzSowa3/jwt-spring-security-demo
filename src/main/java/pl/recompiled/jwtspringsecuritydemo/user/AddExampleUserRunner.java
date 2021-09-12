@@ -13,6 +13,8 @@ public class AddExampleUserRunner implements CommandLineRunner {
     @Override
     public void run(String... args) {
         userService.createUser("user", "pass");
+        userService.createUser("user2", "pass");
+        userService.createAdmin("admin", "pass");
     }
 
 }
