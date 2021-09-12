@@ -33,7 +33,6 @@ public class JwtAccessTokenProvider implements AccessTokenProvider {
         return JWT.create()
                 .withSubject(userId)
                 .withExpiresAt(new Date(System.currentTimeMillis() + properties.getTokenLifespanSeconds() * 1000))
-                .withIssuer(properties.getIssuer())
                 .withClaim("roles", roles)
                 .sign(algorithm);
     }

@@ -9,7 +9,6 @@ import org.springframework.context.annotation.Configuration;
 @ConfigurationProperties(prefix = "access-token.jwt")
 class JwtAccessTokenProperties {
 
-    private String issuer;
     private String secret;
     private Integer tokenLifespanSeconds;
 
