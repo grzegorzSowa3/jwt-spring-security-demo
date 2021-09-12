@@ -25,13 +25,9 @@ public class AccessTokenPreAuthorizationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String authorizationHeader = request.getHeader(AUTHORIZATION);
         if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
-            try {
-                String token = authorizationHeader.substring("Bearer ".length());
-                SecurityContextHolder.getContext()
-                        .setAuthentication(accessTokenProvider.extractAuthentication(token));
-            } catch (Exception e) {
-                log.warn("Exception in AccessTokenPreAuthorizationFilter", e);
-            }
+            String token = authorizationHeader.substring("Bearer ".length());
+            SecurityContextHolder.getContext()
+                    .setAuthentication(accessTokenProvider.extractAuthentication(token));
         }
         filterChain.doFilter(request, response);
     }
