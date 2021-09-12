@@ -1,7 +1,6 @@
 package pl.recompiled.jwtspringsecuritydemo.user;
 
 import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -11,7 +10,6 @@ import java.util.Set;
 
 @Entity
 @Getter
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PACKAGE)
 public class AppUser implements UserDetails {
 
@@ -25,7 +23,11 @@ public class AppUser implements UserDetails {
     private Set<Authority> authorities;
 
     public static AppUser newInstance(String username, String password, Authority... authorities) {
-        return new AppUser(null, username, password, Set.of(authorities));
+        final AppUser user = new AppUser();
+        user.username = username;
+        user.password = password;
+        user.authorities = Set.of(authorities);
+        return user;
     }
 
     @Override
