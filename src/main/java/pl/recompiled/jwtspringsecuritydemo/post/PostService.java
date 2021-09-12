@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import pl.recompiled.jwtspringsecuritydemo.NotFoundException;
+import pl.recompiled.jwtspringsecuritydemo.user.AppUser;
 
 @Component
 @RequiredArgsConstructor
@@ -17,8 +18,8 @@ public class PostService {
     }
 
     public Post createPost(String content) {
-        final String userId = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        return postRepository.save(Post.newInstance(userId, content));
+        final AppUser user = (AppUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return postRepository.save(Post.newInstance(user.getId().toString(), content));
     }
 
     public void deletePost(Long id) {

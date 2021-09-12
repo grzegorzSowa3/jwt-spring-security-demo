@@ -7,12 +7,11 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import pl.recompiled.jwtspringsecuritydemo.user.AppUserService;
 
 import static org.springframework.http.HttpMethod.GET;
+import static org.springframework.http.HttpStatus.OK;
 import static org.springframework.http.HttpStatus.UNAUTHORIZED;
-import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
 
 @Configuration
 @RequiredArgsConstructor
@@ -20,7 +19,6 @@ import static org.springframework.security.config.http.SessionCreationPolicy.STA
 public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     private final PasswordEncoder passwordEncoder;
-    private final AccessTokenProvider accessTokenProvider;
     private final AppUserService userService;
 
     @Override
@@ -32,20 +30,21 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
-                .addFilterBefore(new AccessTokenPreAuthorizationFilter(accessTokenProvider), UsernamePasswordAuthenticationFilter.class)
                 .authorizeRequests()
+                .antMatchers("/h2-console/**").permitAll()
                 .antMatchers(GET, "/posts/**").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .formLogin()
-                .successHandler(new AccessTokenAuthenticationSuccessHandler(accessTokenProvider, userService))
+                .successHandler((req, resp, ex) -> resp.setStatus(OK.value()))
                 .and()
                 .exceptionHandling()
                 .authenticationEntryPoint((req, resp, ex) -> resp.setStatus(UNAUTHORIZED.value()))
                 .and()
-                .sessionManagement().sessionCreationPolicy(STATELESS)
+                .logout()
                 .and()
-                .csrf().disable();
+                .csrf().disable()
+                .headers().frameOptions().disable();
     }
 
 }
