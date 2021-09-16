@@ -28,7 +28,7 @@ public class PostController {
     }
 
     @DeleteMapping("{postId}")
-    @PreAuthorize("@authorChecker.check(#postId) or hasAuthority('ADMIN')")
+    @PreAuthorize("hasAuthority('ADMIN') or @authorChecker.check(#postId)")
     public ResponseEntity<Void> deletePost(@PathVariable Long postId) {
         postService.deletePost(postId);
         return ResponseEntity.status(NO_CONTENT).build();
